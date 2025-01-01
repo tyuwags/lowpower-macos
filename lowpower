@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Get the lowpowermode value for battery power
+battery_lowpowermode=$(pmset -g custom | grep -A 15 "Battery Power" | grep "lowpowermode" | awk '{print $2}')
+
+# Get the lowpowermode value for AC power
+ac_lowpowermode=$(pmset -g custom | grep -A 15 "AC Power" | grep "lowpowermode" | awk '{print $2}')
+
+# Display different messages based on the values
+echo "Battery Power - lowpowermode: $battery_lowpowermode"
+if [ "$battery_lowpowermode" -eq 1 ]; then
+    echo "Low Power Mode is enabled for battery power."
+else
+    echo "Low Power Mode is disabled for battery power."
+fi
+
+echo "AC Power - lowpowermode: $ac_lowpowermode"
+if [ "$ac_lowpowermode" -eq 1 ]; then
+    echo "Low Power Mode is enabled for AC power."
+else
+    echo "Low Power Mode is disabled for AC power."
+fi
