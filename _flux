@@ -1,0 +1,47 @@
+#compdef flux
+
+__flux_manage_power() {
+  local power_source="$1" # Passed as an argument (battery, ac, all)
+  local -a subcommands
+  subcommands=(
+    'enable:Enable energy saver for '"$power_source"'.'
+    'disable:Disable energy saver for '"$power_source"'.'
+  )
+  _describe -t subcommands "flux ${power_source} subcommands" subcommands
+}
+
+_flux() {
+  local curcontext="$curcontext" state line ret=1
+
+  _arguments -C \
+    '1:command:->command' \
+    '2:subcommand:->subcommand' \
+    '*::options:->options' && return 0
+
+  case $state in
+    command)
+      local -a commands
+      commands=(
+        'battery:Control energy saver for battery power.'
+        'ac:Control energy saver for AC power.'
+        'all:Control energy saver for all power sources.'
+        'status:View the current status of power management.'
+        '-h:Print help information.'
+        '--help:Print help information.'
+      )
+      _describe -t commands 'flux commands' commands
+      ;;
+    subcommand)
+      case "${line[1]}" in
+        battery|ac|all)
+          __flux_manage_power "${line[1]}"
+          ;;
+        *)
+          _message "No subcommands available for ${line[1]}"
+          ;;
+      esac
+      ;;
+  esac
+}
+
+_flux "$@"
